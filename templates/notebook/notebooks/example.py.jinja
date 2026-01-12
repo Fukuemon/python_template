@@ -1,0 +1,94 @@
+# /// script
+# requires-python = ">={{ python_version }}"
+# dependencies = [
+#     "marimo",
+#     "polars",
+# ]
+# ///
+
+import marimo
+
+__generated_with = "0.10.0"
+app = marimo.App(width="medium")
+
+
+@app.cell
+def _():
+    import marimo as mo
+    import polars as pl
+    return mo, pl
+
+
+@app.cell
+def _(mo):
+    mo.md(
+        r"""
+        # {{ project_name }}
+
+        {{ project_description }}
+
+        This is a sample marimo notebook demonstrating basic data analysis with Polars.
+        """
+    )
+    return
+
+
+@app.cell
+def _(pl):
+    # Create sample data
+    df = pl.DataFrame(
+        {
+            "id": range(1, 11),
+            "name": [f"Item {i}" for i in range(1, 11)],
+            "value": [i * 10.5 for i in range(1, 11)],
+            "category": ["A", "B"] * 5,
+        }
+    )
+    df
+    return (df,)
+
+
+@app.cell
+def _(df, mo):
+    mo.md(
+        f"""
+        ## Data Summary
+
+        - **Rows**: {df.height}
+        - **Columns**: {df.width}
+        - **Column names**: {', '.join(df.columns)}
+        """
+    )
+    return
+
+
+@app.cell
+def _(df):
+    # Group by category and calculate statistics
+    summary = df.group_by("category").agg(
+        pl.col("value").mean().alias("avg_value"),
+        pl.col("value").sum().alias("total_value"),
+        pl.len().alias("count"),
+    )
+    summary
+    return (summary,)
+
+
+@app.cell
+def _(df, mo):
+    # Interactive slider
+    slider = mo.ui.slider(1, 10, value=5, label="Filter by ID <=")
+    slider
+    return (slider,)
+
+
+@app.cell
+def _(df, slider):
+    # Filtered data based on slider
+    filtered = df.filter(pl.col("id") <= slider.value)
+    filtered
+    return (filtered,)
+
+
+if __name__ == "__main__":
+    app.run()

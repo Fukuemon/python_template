@@ -1,0 +1,62 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+{{ project_description if project_description else project_name }} - FastAPI web application.
+
+## Commands
+
+```bash
+# Install dependencies
+uv sync
+
+# Run server
+uv run uvicorn {{ _package_name }}.main:app --reload
+
+# Linting
+uv run ruff check .
+uv run ruff format .
+
+# Type checking
+uv run pyrefly check
+
+# Run tests
+uv run pytest
+uv run pytest path/to/test.py::test_function  # single test
+uv run pytest --cov                            # with coverage
+
+# Database migrations
+uv run alembic upgrade head
+uv run alembic revision --autogenerate -m "description"
+```
+
+## Code Style
+
+- Python {{ python_version }}, pyrefly for type checking
+- Ruff rules: E, W, F, I, B, UP, N, ANN, RUF (line length 88)
+- Double quotes, space indentation
+- All functions require type annotations
+
+## Project Structure
+
+```text
+src/{{ _package_name }}/
+├── main.py          # FastAPI app entry point
+├── config.py        # Settings (pydantic-settings)
+├── database.py      # SQLAlchemy engine, session
+├── exceptions.py    # Global exceptions
+└── users/           # Domain module
+    ├── router.py    # API endpoints
+    ├── schemas.py   # Pydantic models
+    ├── models.py    # SQLAlchemy models
+    └── service.py   # Business logic
+```
+
+## Adding a New Domain
+
+1. Create `src/{{ _package_name }}/newdomain/`
+2. Add `models.py`, `schemas.py`, `service.py`, `router.py`
+3. Import models in `alembic/env.py`
+4. Include router in `main.py`

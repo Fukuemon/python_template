@@ -1,0 +1,42 @@
+# {{ project_name }}
+
+{{ project_description }}
+
+## Setup
+
+```bash
+uv sync
+cp .env.example .env
+```
+
+## Development
+
+```bash
+# Run server
+uv run uvicorn {{ _package_name }}.main:app --reload
+
+# Run tests
+uv run pytest
+
+# Lint & format
+uv run ruff check .
+uv run ruff format .
+
+# Type check
+uv run pyrefly check
+```
+
+## Database
+
+```bash
+# Run migrations
+uv run alembic upgrade head
+
+# Create migration
+uv run alembic revision --autogenerate -m "description"
+```
+
+## API Documentation
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc

@@ -1,0 +1,42 @@
+"""CLI tests."""
+
+from typer.testing import CliRunner
+
+from {{ _package_name }}.main import app
+
+runner = CliRunner()
+
+
+def test_hello() -> None:
+    """Test hello command."""
+    result = runner.invoke(app, ["hello", "Test"])
+    assert result.exit_code == 0
+    assert "Hello, Test!" in result.output
+
+
+def test_hello_formal() -> None:
+    """Test hello command with formal flag."""
+    result = runner.invoke(app, ["hello", "Test", "--formal"])
+    assert result.exit_code == 0
+    assert "Good day, Test!" in result.output
+
+
+def test_hello_count() -> None:
+    """Test hello command with count."""
+    result = runner.invoke(app, ["hello", "Test", "--count", "3"])
+    assert result.exit_code == 0
+    assert result.output.count("Hello, Test!") == 3
+
+
+def test_version() -> None:
+    """Test version command."""
+    result = runner.invoke(app, ["version"])
+    assert result.exit_code == 0
+    assert "0.1.0" in result.output
+
+
+def test_info() -> None:
+    """Test info command."""
+    result = runner.invoke(app, ["info"])
+    assert result.exit_code == 0
+    assert "{{ project_name }}" in result.output

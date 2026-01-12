@@ -1,0 +1,48 @@
+# {{ project_name }}
+
+{{ project_description }}
+
+## Installation
+
+```bash
+uv sync
+```
+
+## Usage
+
+```bash
+# Run directly
+uv run {{ project_name }} --help
+
+# Or use python -m
+uv run python -m {{ _package_name }} --help
+```
+
+## Commands
+
+```bash
+# Say hello
+uv run {{ project_name }} hello World
+uv run {{ project_name }} hello World --count 3
+uv run {{ project_name }} hello World --formal
+
+# Show info
+uv run {{ project_name }} info
+
+# Show version
+uv run {{ project_name }} version
+```
+
+## Development
+
+```bash
+# Run tests
+uv run pytest
+
+# Lint & format
+uv run ruff check .
+uv run ruff format .
+
+# Type check
+uv run pyrefly check
+```

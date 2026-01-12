@@ -1,0 +1,34 @@
+# Build stage
+FROM python:{{ python_version }}-slim AS builder
+
+WORKDIR /app
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project --no-dev
+
+COPY . .
+RUN uv sync --frozen --no-dev
+
+# Runtime stage
+FROM python:{{ python_version }}-slim
+
+WORKDIR /app
+
+RUN useradd --create-home --uid 1000 appuser
+USER appuser
+
+COPY --from=builder --chown=appuser:appuser /app/.venv /app/.venv
+COPY --from=builder --chown=appuser:appuser /app/src /app/src
+COPY --from=builder --chown=appuser:appuser /app/alembic /app/alembic
+COPY --from=builder --chown=appuser:appuser /app/alembic.ini /app/alembic.ini
+
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONPATH="/app/src"
+
+EXPOSE 8000
+
+CMD ["uvicorn", "{{ _package_name }}.main:app", "--host", "0.0.0.0", "--port", "8000"]

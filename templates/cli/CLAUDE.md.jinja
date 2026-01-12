@@ -1,0 +1,56 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+{{ project_description if project_description else project_name }} - typer CLI application.
+
+## Commands
+
+```bash
+# Install dependencies
+uv sync
+
+# Run CLI
+uv run {{ project_name }} --help
+uv run python -m {{ _package_name }} --help
+
+# Linting
+uv run ruff check .
+uv run ruff format .
+
+# Type checking
+uv run pyrefly check
+
+# Run tests
+uv run pytest
+uv run pytest --cov
+```
+
+## Code Style
+
+- Python {{ python_version }}, pyrefly for type checking
+- Ruff rules: E, W, F, I, B, UP, N, ANN, RUF (line length 88)
+- Double quotes, space indentation
+- All functions require type annotations
+
+## Project Structure
+
+```text
+src/{{ _package_name }}/
+├── main.py      # Typer app and commands
+├── config.py    # Settings
+└── __main__.py  # python -m entry point
+```
+
+## Adding Commands
+
+Add new commands in `main.py`:
+
+```python
+@app.command()
+def mycommand(arg: str) -> None:
+    """My command description."""
+    console.print(f"Argument: {arg}")
+```

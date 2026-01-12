@@ -1,0 +1,75 @@
+# Copier configuration
+# https://copier.readthedocs.io/
+
+_min_copier_version: "9.0.0"
+
+_subdirectory: "templates/{{ project_type }}"
+
+_answers_file: .copier-answers.yml
+
+# =============================================================================
+# Questions
+# =============================================================================
+
+project_type:
+  type: str
+  help: "プロジェクトタイプを選択"
+  choices:
+    Web API:
+      value: web-api
+      help: "FastAPI + SQLAlchemy + Alembic"
+    CLI:
+      value: cli
+      help: "typer CLIアプリケーション"
+    Notebook:
+      value: notebook
+      help: "marimo + polars データ分析"
+  default: web-api
+
+project_name:
+  type: str
+  help: "プロジェクト名（例: my-awesome-app）"
+  validator: "{% if not project_name %}プロジェクト名は必須です{% endif %}"
+
+project_description:
+  type: str
+  help: "プロジェクトの説明"
+  default: ""
+
+author_name:
+  type: str
+  help: "作者名"
+  default: ""
+
+author_email:
+  type: str
+  help: "作者のメールアドレス"
+  default: ""
+
+python_version:
+  type: str
+  help: "Pythonバージョン"
+  default: "3.13"
+  choices:
+    - "3.12"
+    - "3.13"
+
+include_docker:
+  type: bool
+  help: "Dockerfileを含めますか？"
+  default: true
+  when: "{{ project_type != 'notebook' }}"
+
+include_github_actions:
+  type: bool
+  help: "GitHub Actions CI/CDを含めますか？"
+  default: true
+
+# =============================================================================
+# Computed values
+# =============================================================================
+
+_package_name:
+  type: str
+  default: "{{ project_name | replace('-', '_') | replace(' ', '_') | lower }}"
+  when: false

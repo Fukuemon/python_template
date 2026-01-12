@@ -1,0 +1,54 @@
+# {{ project_name }}
+
+{{ project_description }}
+
+## Installation
+
+```bash
+uv sync
+```
+
+## Usage
+
+### Run Marimo Notebook
+
+```bash
+# Edit mode (interactive)
+uv run marimo edit notebooks/example.py
+
+# Run mode (read-only)
+uv run marimo run notebooks/example.py
+```
+
+### Create New Notebook
+
+```bash
+uv run marimo edit notebooks/new_notebook.py
+```
+
+## Project Structure
+
+```text
+├── notebooks/       # Marimo notebooks (.py files)
+│   └── example.py   # Example notebook
+├── src/{{ _package_name }}/
+│   └── data.py      # Data utilities
+└── data/            # Data files (create as needed)
+```
+
+## Development
+
+```bash
+# Lint & format
+uv run ruff check .
+uv run ruff format .
+
+# Type check
+uv run pyrefly check
+```
+
+## Why Marimo?
+
+- **Reactive**: Cells automatically re-run when dependencies change
+- **Pure Python**: Notebooks are stored as `.py` files, easy to version control
+- **Reproducible**: No hidden state, deterministic execution order

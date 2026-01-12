@@ -1,0 +1,53 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+{{ project_description if project_description else project_name }} - Data analysis with marimo and polars.
+
+## Commands
+
+```bash
+# Install dependencies
+uv sync
+
+# Run notebook (edit mode)
+uv run marimo edit notebooks/example.py
+
+# Run notebook (read-only)
+uv run marimo run notebooks/example.py
+
+# Create new notebook
+uv run marimo edit notebooks/new_notebook.py
+
+# Linting
+uv run ruff check .
+uv run ruff format .
+
+# Type checking
+uv run pyrefly check
+```
+
+## Code Style
+
+- Python {{ python_version }}, pyrefly for type checking
+- Ruff rules: E, W, F, I, B, UP, N, ANN, RUF (line length 88)
+- Double quotes, space indentation
+- All functions require type annotations
+
+## Project Structure
+
+```text
+├── notebooks/           # Marimo notebooks
+│   └── example.py
+├── src/{{ _package_name }}/
+│   └── data.py          # Data utilities
+└── data/                # Data files
+```
+
+## Marimo Notes
+
+- Notebooks are pure Python files, git-friendly
+- Cells are reactive: changing one cell updates dependents
+- Use `mo.md()` for markdown, `mo.ui.*` for interactive widgets

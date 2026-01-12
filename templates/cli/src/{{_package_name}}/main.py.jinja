@@ -1,0 +1,52 @@
+"""CLI entry point."""
+
+from typing import Annotated, Optional
+
+import typer
+from rich.console import Console
+from rich.table import Table
+
+from {{ _package_name }}.config import settings
+
+app = typer.Typer(
+    name="{{ project_name }}",
+    help="{{ project_description }}",
+    add_completion=False,
+)
+console = Console()
+
+
+@app.command()
+def hello(
+    name: Annotated[str, typer.Argument(help="Name to greet")] = "World",
+    count: Annotated[int, typer.Option("--count", "-c", help="Number of greetings")] = 1,
+    formal: Annotated[bool, typer.Option("--formal", "-f", help="Use formal greeting")] = False,
+) -> None:
+    """Say hello to NAME."""
+    greeting = "Good day" if formal else "Hello"
+    for _ in range(count):
+        console.print(f"[green]{greeting}, {name}![/green]")
+
+
+@app.command()
+def info() -> None:
+    """Show application information."""
+    table = Table(title="{{ project_name }}")
+    table.add_column("Setting", style="cyan")
+    table.add_column("Value", style="green")
+
+    table.add_row("App Name", settings.app_name)
+    table.add_row("Debug", str(settings.debug))
+    table.add_row("Version", "0.1.0")
+
+    console.print(table)
+
+
+@app.command()
+def version() -> None:
+    """Show version."""
+    console.print("[bold]{{ project_name }}[/bold] version [cyan]0.1.0[/cyan]")
+
+
+if __name__ == "__main__":
+    app()
