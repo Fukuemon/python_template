@@ -1,0 +1,51 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=$(jq -r \".tool_input.file_path\" <<< \"$1\"); [[ $f == *.py ]] && cd \"$CLAUDE_PROJECT_DIR\" && uv run ruff format \"$f\" 2>/dev/null && uv run ruff check --fix \"$f\" 2>/dev/null || true' - ",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'path=$(jq -r \".tool_input.file_path\" <<< \"$1\" 2>/dev/null || echo \"\"); [[ $path == *\".env\"* && $path != *\".env.example\"* ]] && exit 2 || exit 0' - ",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -n \"$CLAUDE_ENV_FILE\" ]; then echo \"export PYTHONPATH=\\\"${CLAUDE_PROJECT_DIR}/src:\\$PYTHONPATH\\\"\" >> \"$CLAUDE_ENV_FILE\"; fi'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(uv run pytest*)",
+      "Bash(uv run ruff*)",
+      "Bash(uv run pyrefly*)",
+      "Bash(uv run alembic*)",
+      "Bash(uv run uvicorn*)",
+      "Bash(uv sync*)",
+      "Bash(uv add*)"
+    ]
+  }
+}
